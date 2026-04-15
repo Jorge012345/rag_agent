@@ -1,0 +1,16 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Secrets (copy from app/env/openai.env.example)
+app/env/*.env
+
+# Chroma local database
+app/infrastructure/vectorstores/chroma_db/
