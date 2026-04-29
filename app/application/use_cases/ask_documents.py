@@ -9,10 +9,6 @@ from app.domain.ports.llm_port import LlmPort
 
 _MAX_CONTEXT_CHARS = 14_000
 
-_SYSTEM_PROMPT = """You are a helpful assistant answering questions about documents the user has ingested.
-Use ONLY the provided context excerpts to support your answer. If the context does not contain enough information, say so clearly instead of guessing.
-Write in clear, natural prose. Match the language of the user's question when possible."""
-
 
 @dataclass(frozen=True, slots=True)
 class AskDocumentsResult:
@@ -54,12 +50,14 @@ class AskDocumentsUseCase:
             )
 
         context_block = _build_context_block(hits)
-        user_prompt = (
-            f"Context excerpts:\n---\n{context_block}\n---\n\n"
-            f"Question: {text}\n\n"
-            "Answer based on the context above:"
+
+        # Use LCEL chain via the port (prompt template + LLM)
+        answer = self._llm.generate_with_template(
+            "rag",
+            context=context_block,
+            question=text,
         )
-        answer = self._llm.generate(system=_SYSTEM_PROMPT, user=user_prompt)
+
         return AskDocumentsResult(answer=answer.strip(), context_hits=tuple(hits))
 
 

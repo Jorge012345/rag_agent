@@ -2,7 +2,7 @@
 
 import os
 import uuid
-from typing import Any, Mapping, Sequence
+from typing import Any, Mapping, Sequence, cast
 
 import chromadb
 from chromadb.config import Settings as ChromaSettings
@@ -63,7 +63,7 @@ class ChromaVectorStoreAdapter(VectorStorePort):
             metadatas = [_sanitize_metadata(c.metadata) for c in batch]
             collection.add(
                 ids=ids,
-                embeddings=embeddings,
+                embeddings=cast(Any, embeddings),
                 documents=documents,
-                metadatas=metadatas,
+                metadatas=cast(Any, metadatas),
             )
